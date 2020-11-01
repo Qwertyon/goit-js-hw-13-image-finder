@@ -10,22 +10,31 @@ const searchFormRef = document.querySelector('.search-form');
 const galleryRef = document.querySelector('.js-gallery');
 const loadMoreBtn = document.querySelector('.js-load-more-btn');
 
-const pullGallery = event => {
-  event.preventDefault();
+const pullGallery = _.debounce(event => {
   galleryRef.innerHTML = '';
-  searchInput = '';
-  pageNumber = 1;
-  searchInput = event.target.value;
-  fetchImage(searchInput);
-};
+  if (event.target.value) {
+    event.preventDefault();
+    searchInput = '';
+    pageNumber = 1;
+    searchInput = event.target.value;
+    fetchImage(searchInput);
+  }
+}, 500);
 
 const renderllery = data => {
   const markup = imagesListTpl(data.hits);
   galleryRef.insertAdjacentHTML('beforeend', markup);
   window.scrollTo(0, document.documentElement.offsetHeight);
+  console.log(data.hits.length);
+  if (data.hits.length === 12) {
+    loadMoreBtn.classList.remove('hidden');
+  }
+  if (data.hits.length !== 12) {
+    loadMoreBtn.classList.add('hidden');
+  }
 };
 
-searchFormRef.addEventListener('change', pullGallery);
+searchFormRef.addEventListener('input', pullGallery);
 
 const loadMoreImages = () => {
   if (searchInput) {
