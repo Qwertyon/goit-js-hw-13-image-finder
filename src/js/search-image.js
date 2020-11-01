@@ -12,6 +12,7 @@ const loadMoreBtn = document.querySelector('.js-load-more-btn');
 
 const pullGallery = _.debounce(event => {
   galleryRef.innerHTML = '';
+  loadMoreBtn.classList.add('hidden');
   if (event.target.value) {
     event.preventDefault();
     searchInput = '';
@@ -25,11 +26,10 @@ const renderllery = data => {
   const markup = imagesListTpl(data.hits);
   galleryRef.insertAdjacentHTML('beforeend', markup);
   window.scrollTo(0, document.documentElement.offsetHeight);
-  console.log(data.hits.length);
   if (data.hits.length === 12) {
     loadMoreBtn.classList.remove('hidden');
   }
-  if (data.hits.length !== 12) {
+  if (data.hits.length < 12) {
     loadMoreBtn.classList.add('hidden');
   }
 };
